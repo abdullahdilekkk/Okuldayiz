@@ -1,13 +1,38 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as MirasUserAdmin
 from .models import User
+from django.contrib.auth.forms import UserCreationForm as MirasUserCreationForm
+from django.contrib.auth.forms import UserChangeForm as MirasUserChangeForm
+
+
+class UserCreationForm(MirasUserCreationForm):  #admin panelinde (veya custom bir register sayfasında) yeni kullanıcı oluşturmak için kullanılır.
+    class Meta:
+        model = User    #Cutom yaptığım User
+        fields = ("email",)     #password1 ve password2 alanları kodla ekleniyor (__init__ içinde) miras aldığı metadan 
+
+
+
+class UserChangeForm(MirasUserChangeForm):  #var olan kullanıcıları düzenlemek için kullanılır.
+    class Meta:
+        model = User
+        fields = ("email","first_name","last_name","phone_number","role")
+
+
+
 
 
 @admin.register(User)
 class UserAdmin(MirasUserAdmin):
 #alt sınıftsn miras aldık adını aynı kullanmak için as dedik
 
-    list_display = ["username", "email","role", "is_active"]
+    add_form = UserCreationForm
+    form = UserChangeForm
+    model = User
+
+
+
+
+    list_display = ["email","role", "is_active"]
     #tablo halinde hangi sütunları göstereceğini belirler
     search_fields = ("email","first_name","last_name","phone_number")
 

@@ -1,6 +1,38 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser 
 #custom bir user modeli için miras alıyorum
+
+
+
+#User, Group, Permission, UserManager } django.contrib.auth.models den gelir ama username 
+#daha aşağı katmanda özelleştirilir bu yüzden django.contrib.auth.base_user
+from django.contrib.auth.base_user import BaseUserManager 
+
+class CustomUserManager(BaseUserManager):
+    def create_user(self, email, password=None, **extra_fields):    # self, USERNAME_FIELD de ne varsa ,REQUIRED_FIELDS varsa ,password
+        if not email:
+            raise ValueError("Email zorunludur")
+        
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+
+    def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
+        extra_fields.setdefault("is_active", True)
+
+        if extra_fields.get("is_staff") is not True:
+            raise ValueError("Süper kullanıcı için is_staff=True olmalı")
+        if extra_fields.get("is_superuser") is not True:
+            raise ValueError("Süper kullanıcı için is_superuser=True olmalı")
+
+        return self.create_user(email, password, **extra_fields)
+
+
 
 
 class City(models.Model):
@@ -28,11 +60,18 @@ class District(models.Model):
     
 
 class User(AbstractUser):
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = []        
+
+
+    objects = CustomUserManager() #bu modelde kullanıcı oluşturma, sorgulama ve superuser işlemlerini bu manager yönetsin
+
+    
     class Role(models.TextChoices):
-        ADMİN = "admin", "Admin"    # db de görünen , Kullnıcıya görünen
+        ADMIN = "admin", "Admin"    # db de görünen , Kullnıcıya görünen
         USER = "user" , "User"
         OWNER = "owner" , "Okul Sahibi"
-
+    username = None
     first_name = models.CharField(max_length=256)
     last_name = models.CharField(max_length=256)
     email = models.EmailField(max_length=255,unique=True)   #Tek email = True
@@ -47,8 +86,6 @@ class User(AbstractUser):
     verified = models.BooleanField(default=False)
     #diğer alanlar AbstructBaseUser dan geliyor 
 
-    USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["username"]
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
