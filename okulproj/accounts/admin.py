@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as MirasUserAdmin
-from .models import User
+from .models import City, District, User
 from django.contrib.auth.forms import UserCreationForm as MirasUserCreationForm
 from django.contrib.auth.forms import UserChangeForm as MirasUserChangeForm
 
@@ -48,3 +48,17 @@ class UserAdmin(MirasUserAdmin):
         (None, {"fields": ("email","password1","password2","role","is_staff","is_active")}),
     )
     #custom user yaptığımız için zorunlu
+
+
+@admin.register(City)
+class CityAdmin(admin.ModelAdmin):
+    list_display = ("name", "plate_no")
+    search_fields = ('name',)
+    ordering = ('plate_no',)
+
+@admin.register(District)
+class DistrictAdmin(admin.ModelAdmin):
+    list_display = ("city", "name")
+    list_filter = ('city',) # Yan tarafta şehre göre filtreleme çıkar
+    search_fields = ('name',)
+    autocomplete_fields = ("city",)  #şehre göre arama yapmayı sağlar
