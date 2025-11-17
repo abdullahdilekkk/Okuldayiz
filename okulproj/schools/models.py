@@ -55,6 +55,9 @@ class School(models.Model):
     created_at = models.DateTimeField(auto_now_add=True) # İlk oluşturulma tarihi
     updated_at = models.DateTimeField(auto_now=True)     # Son güncellenme tarihi
 
+    def __str__(self):
+        return self.name
+
 
 class SchoolPlan(models.Model):
     class GradeLevel(models.TextChoices):

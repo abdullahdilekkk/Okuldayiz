@@ -37,10 +37,11 @@ class SchoolAdmin(admin.ModelAdmin):
 
 @admin.register(SchoolPlan)
 class SchoolPlanAdmin(admin.ModelAdmin):
-    list_display = ("school", "title", "grade_level", "GradeLevel")
-    list_filter = ('grade_level', 'school')
+    list_display = ("school", "title", "grade_level")
+    list_filter = ('school', )
     search_fields = ('title', 'school__name')
     inlines = (PlanOptionInline, AdditionalFeeInline)
+    filter_horizontal = ('languages', "included_services")
 
 
 
