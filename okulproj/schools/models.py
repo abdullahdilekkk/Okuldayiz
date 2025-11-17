@@ -90,7 +90,6 @@ class SchoolPlan(models.Model):
         return f"{self.school}-{self.title}"
     
 
-
 class PlanOption(models.Model):
 
     plan = models.ForeignKey(SchoolPlan, on_delete=models.CASCADE)
@@ -105,9 +104,6 @@ class PlanOption(models.Model):
         durum = "Zorunlu" if self.is_compulsory else "İsteğe Bağlı"
         return f"{self.service.name} (+{self.price} TL) - {durum}"
     
-
-
-
 
 class AdditionalFee(models.Model):
     """
