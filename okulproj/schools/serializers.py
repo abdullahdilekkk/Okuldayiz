@@ -44,7 +44,7 @@ class AdditionalFeeSerializers(serializers.Serializer):
 
 class SchoolPlanSerializers(serializers.Serializer):
     id = serializers.IntegerField(read_only =True)
-    school_id = serializers.IntegerField(ready_only = True)
+    school_id = serializers.IntegerField(read_only = True)
     title = serializers.CharField()
     grade_level = serializers.CharField()
     description = serializers.CharField(required = False) #boş olabilir 
