@@ -76,6 +76,6 @@ class SchoolDetailSerializers(serializers.Serializer):
     district = DistrictSerializers(read_only = True)
     features = SchoolFeatureSerializers(many = True)
     #normalde schoolplan_set olması gerekitdi ama related_name yapdığımız için modelde 
-    plans = PlanOptionSerializers(many = True)
+    plans = SchoolPlanSerializers(many = True)
     images = SchoolImageSerializers(many = True)
 
