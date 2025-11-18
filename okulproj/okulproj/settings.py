@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',   #DRF İÇİN GEREK
+    'django_filters',
     "accounts",
     "schools",
 ]
