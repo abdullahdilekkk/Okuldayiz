@@ -3,7 +3,7 @@ from .models import School
 from accounts.serializers import CitySerializers, DistrictSerializers
 #python sürümü sorunlarından dolayı burayı alt sınıf olan Serializer e geçtik 
 class SchoolSerializers(serializers.Serializer):
-    id = serializers.ImageField(read_only =True)
+    id = serializers.IntegerField(read_only =True)
     name = serializers.CharField()
     slug = serializers.SlugField()
     school_type = serializers.CharField()
