@@ -11,7 +11,7 @@ class SchoolListAPIView(ListAPIView):
     serializer_class = SchoolSerializers
 
     filter_backends = [DjangoFilterBackend]
-    filterset_set =["city", "district", "school_type"]
+    filterset_fields = ["city", "district", "school_type"]
 
 class SchoolDetailAPIView(RetrieveAPIView):
 
