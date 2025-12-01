@@ -132,3 +132,14 @@ LOGIN_URL = "accounts:login"    #path("login/", views.login_view, name="login") 
 LOGIN_REDIRECT_URL = "accounts:profile"     #başarıyla giriş yapan nereye gitsin 
 LOGOUT_REDIRECT_URL = "home"        #çıkış yapan nereye gitsin 
  
+
+
+# --- DRF AYARLARI ---
+REST_FRAMEWORK = {
+    # 1. Sayfalama Ayarı (Pagination)
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,  # Her sayfada 10 okul görünsün
+    
+    # 2. Varsayılan Filtreleme Motoru
+    'DEFAULT_FILTER_BACKEND': 'django_filters.rest_framework.DjangoFilterBackend',
+}
