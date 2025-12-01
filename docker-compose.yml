@@ -1,0 +1,21 @@
+version: "3.8" 
+# Docker Compose'un hangi sürümünü kullandığımız. (Standart 3.8'dir)
+
+services:
+
+  db:
+    image: mysql:8.0
+    restart: always
+    container_name: okuldayiz_mysql_database
+    environment:
+      MYSQL_ROOT_PASSWORD: passwordAPOW
+      MYSQL_DATABASE: okuldayiz_db
+      MYSQL_USER: okuldayiz
+      MYSQL_PASSWORD: okuldayizpasword
+    ports: 
+      - "3306:3306" 
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:

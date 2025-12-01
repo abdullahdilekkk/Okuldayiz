@@ -71,7 +71,7 @@ class SchoolPlan(models.Model):
 
     school = models.ForeignKey(School, related_name="plans", on_delete=models.CASCADE)
     title = models.CharField("Plan Başlığı", max_length=256)
-    grade_level = models.CharField("Eğitim Kademesi", choices=GradeLevel.choices)
+    grade_level = models.CharField("Eğitim Kademesi", choices=GradeLevel.choices, max_length=20)
 
 
     languages = models.ManyToManyField(Language, blank=True)
