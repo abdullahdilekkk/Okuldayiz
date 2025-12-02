@@ -27,6 +27,7 @@ class SchoolAdmin(admin.ModelAdmin):
     search_fields = ("name",)
     inlines = (SchoolImageInline, )
     filter_horizontal = ('features',)
+    autocomplete_fields = ('city', 'district')
 
     prepopulated_fields = {
         "slug" : ("name",)

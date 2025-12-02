@@ -56,7 +56,7 @@ class District(models.Model):
         ordering = ["name"]
 
     def __str__(self):
-        return self.name
+        return f"{self.city.name} - {self.name}"
     
 
 class User(AbstractUser):

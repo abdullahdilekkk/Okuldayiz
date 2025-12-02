@@ -30,8 +30,6 @@ class UserAdmin(MirasUserAdmin):
     model = User
 
 
-
-
     list_display = ["email","role", "is_active"]
     #tablo halinde hangi sütunları göstereceğini belirler
     search_fields = ("email","first_name","last_name","phone_number")
