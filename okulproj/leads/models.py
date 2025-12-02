@@ -19,4 +19,4 @@ class Lead(models.Model):
 
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name} - {self.school.name}"
+        return f"{self.name} {self.surname} - {self.school.name}"
