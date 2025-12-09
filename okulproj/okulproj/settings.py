@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     "accounts",
     "schools",
     "leads",
+    "drf_spectacular",
 ]
 
 MIDDLEWARE = [
@@ -143,4 +144,8 @@ REST_FRAMEWORK = {
     
     # 2. Varsayılan Filtreleme Motoru
     'DEFAULT_FILTER_BACKEND': 'django_filters.rest_framework.DjangoFilterBackend',
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_AUTHENTICATION_CLASSES' : [
+        'rest_framework_simplejwt.authentication.JWTAuthentication'
+    ],
 }
