@@ -16,10 +16,10 @@ class LeadSerializer(serializers.ModelSerializer):
         ret = super().to_representation(instance)
 
         if instance.school:
-            instance["school_name"] = instance.school.name
+            ret["school_name"] = instance.school.name
 
         if instance.school_plan:
-            instance["plan_title"] = instance.school_plan.title
+            ret["plan_title"] = instance.school_plan.title
 
 
         return ret

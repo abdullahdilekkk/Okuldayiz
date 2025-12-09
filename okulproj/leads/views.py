@@ -19,7 +19,11 @@ class LeadListAPIView(ListAPIView):
     serializer_class = LeadSerializer
     permission_classes = (IsAuthenticated, )
 
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     
+    filterset_fields = ['called', 'school']
+    search_fields = ['name', 'surname']      # Nerede kelime aranacak?
+    ordering_fields = ['time', 'name']
 
     def get_queryset(self):
         return Lead.objects.filter(school__owner = self.request.user)
