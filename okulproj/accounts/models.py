@@ -2,8 +2,6 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser 
 #custom bir user modeli için miras alıyorum
 
-
-
 #User, Group, Permission, UserManager } django.contrib.auth.models den gelir ama username 
 #daha aşağı katmanda özelleştirilir bu yüzden django.contrib.auth.base_user
 from django.contrib.auth.base_user import BaseUserManager 
