@@ -1,7 +1,10 @@
 from rest_framework import serializers
 from .models import AdditionalFee, Language, School
 from accounts.serializers import CitySerializers, DistrictSerializers
-#python sürümü sorunlarından dolayı burayı alt sınıf olan Serializer e geçtik 
+
+
+
+
 class SchoolSerializers(serializers.Serializer):
     id = serializers.IntegerField(read_only =True)
     name = serializers.CharField()
@@ -12,8 +15,41 @@ class SchoolSerializers(serializers.Serializer):
     city = CitySerializers(read_only=True)
     district = DistrictSerializers(read_only=True)
 
-    # model = School
-    # fields = ["id", "name", "slug", "school_type", "city", "district", "address"]
+    city_id = serializers.IntegerField(write_only = True, required=False)
+    district_id = serializers.IntegerField(write_only = True, required=False)
+
+
+    def update(self, instance, validated_data):
+        """
+        instance: Veritabanındaki kayıtlı okul (Değişmeden önceki hali)
+        validated_data: Frontend'den gelen yeni veriler (Değişecek hali)
+        """
+
+        instance.name = validated_data.get("name", instance.name)
+        instance.slug = validated_data.get("slug", instance.slug)
+        instance.school_type = validated_data.get("school_type", instance.school_type)
+        instance.address = validated_data.get("address", instance.address)
+
+        instance.city_id = validated_data.get("city_id", instance.city_id)
+        instance.district_id = validated_data.get("district_id", instance.district_id)
+
+
+        instance.save()
+        return instance 
+        
+
+
+
+            
+
+
+
+
+
+
+
+
+
 
 class LanguageSerializers(serializers.Serializer):
     id = serializers.IntegerField(read_only = True)
