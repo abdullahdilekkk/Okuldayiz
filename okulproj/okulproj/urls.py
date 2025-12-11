@@ -13,7 +13,7 @@ urlpatterns = [
     path("api/token/refresh/", TokenRefreshView.as_view(), name = "toke_refresh"),
 
     path('admin/', admin.site.urls),
-    path("accounts/", include("accounts.urls")),
+    path("api/accounts/", include("accounts.urls")),
     path("api/schools/", include("schools.urls")),
     path("api/leads/", include("leads.urls"))
 ]

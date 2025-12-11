@@ -1,22 +1,17 @@
 from django.urls import path
-from django.contrib.auth import views as DefaultAuth
-from django.views.generic import TemplateView 
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from .views import UserRegisterAPIView
 
 app_name = "accounts"
 
 urlpatterns = [
-    path("login/", DefaultAuth.LoginView.as_view(template_name="accounts/login.html"), name="login"),
-    
-    # 2. GÜVENLİKÇİYİ ARADAN ÇIKARDIK, DİREKT ALETİ KULLANDIK
-    path("profile/", TemplateView.as_view(template_name="accounts/profile.html"), name="profile"),
-    
-    # 3. PARANTEZİ UNUTMA (LogoutView bir sınıf olduğu için () gerekir)
-    path("logout/", DefaultAuth.LogoutView.as_view(), name="logout")
+    path("register/", UserRegisterAPIView.as_view(), name="register"),
+    # 2. Giriş Yap & Token Al(Hazır gelir)
+    path("login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    # 3. Token Yenile (Hazır Gelir)
+    path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
 ]
-#Djangonun default auth yapısını kullanıyorum
 
-#as_view onu bir methoda çevirir yoksa LoginView bir sınıftır 
-
+#Buralar eski branch da vardı api iletişiminde olmayacak 
 #template_name araması gereken yeri direkt vermeyi yarar template/accounts/login.html de arıyıcak 
-
 #Template_view da render eder direkt sayfa ver gösteriym der  yani view da method açıp renderlamak 
