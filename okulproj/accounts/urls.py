@@ -1,6 +1,6 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from .views import UserRegisterAPIView
+from .views import UserRegisterAPIView, UserProfileAPIView
 
 app_name = "accounts"
 
@@ -10,6 +10,7 @@ urlpatterns = [
     path("login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     # 3. Token Yenile (Hazır Gelir)
     path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("me/", UserProfileAPIView.as_view(), name="user_profile"),
 ]
 
 #Buralar eski branch da vardı api iletişiminde olmayacak 
