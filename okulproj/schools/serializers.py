@@ -1,54 +1,48 @@
+import attr
 from rest_framework import serializers
-from .models import AdditionalFee, Language, School
-from accounts.serializers import CitySerializers, DistrictSerializers
+from .models import AdditionalFee, Language, School, SchoolFeature
+from accounts.serializers import CitySerializers, DistrictSerializers, CityRelatedField, DistrictRelatedField
+from accounts.models import City, District
 
+class SchoolFeatureSerializers(serializers.Serializer):
+    id = serializers.IntegerField(read_only = True)
+    title = serializers.CharField()
 
+class SchoolFeatureRelatedField(serializers.PrimaryKeyRelatedField):
+    def to_representation(self, value):
+        return SchoolFeatureSerializers(value).data
+    
+class SchoolSerializers(serializers.ModelSerializer):
+    
+    city = CityRelatedField(queryset = City.objects.all(), required = True, allow_null = False)
+    district = DistrictRelatedField(queryset = District.objects.all(), required = True, allow_null = False)
+    features = SchoolFeatureRelatedField(queryset = SchoolFeature.objects.all(), many = True, required = False)
 
+    class Meta:        
+        model = School
+        fields = [
+            "id",
+            "name",
+            "owner",
+            "school_type",
+            "city",
+            "district",
+            "description",
+            "slug",
+            "features",
+            "created_at",
+            "updated_at"
+            ]
+        read_only_fields = ["id", "slug", "created_at", "updated_at"]
 
-class SchoolSerializers(serializers.Serializer):
-    id = serializers.IntegerField(read_only =True)
-    name = serializers.CharField()
-    slug = serializers.SlugField()
-    school_type = serializers.CharField()
-    address = serializers.CharField()
+    def validate(self, attrs):
 
-    city = CitySerializers(read_only=True)
-    district = DistrictSerializers(read_only=True)
-
-    city_id = serializers.IntegerField(write_only = True, required=False)
-    district_id = serializers.IntegerField(write_only = True, required=False)
-
-
-    def update(self, instance, validated_data):
-        """
-        instance: Veritabanındaki kayıtlı okul (Değişmeden önceki hali)
-        validated_data: Frontend'den gelen yeni veriler (Değişecek hali)
-        """
-
-        instance.name = validated_data.get("name", instance.name)
-        instance.slug = validated_data.get("slug", instance.slug)
-        instance.school_type = validated_data.get("school_type", instance.school_type)
-        instance.address = validated_data.get("address", instance.address)
-
-        instance.city_id = validated_data.get("city_id", instance.city_id)
-        instance.district_id = validated_data.get("district_id", instance.district_id)
-
-
-        instance.save()
-        return instance 
-        
-
-
-
-            
-
-
-
-
-
-
-
-
+        city = attrs.get('city')
+        district = attrs.get('district')
+        if city and district:
+            if district.city != city:
+                raise serializers.ValidationError({"district": "Seçtiğiniz ilçe, seçtiğiniz şehre ait değil!"})
+        return attrs
 
 
 class LanguageSerializers(serializers.Serializer):
@@ -60,9 +54,7 @@ class ServiceSerializers(serializers.Serializer):
     name = serializers.CharField()
     icon = serializers.CharField()
 
-class SchoolFeatureSerializers(serializers.Serializer):
-    id = serializers.IntegerField(read_only = True)
-    title = serializers.CharField()
+
 
 class PlanOptionSerializers(serializers.Serializer):
     id = serializers.IntegerField(read_only = True)

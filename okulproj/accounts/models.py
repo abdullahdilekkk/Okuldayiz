@@ -46,7 +46,7 @@ class City(models.Model):
         
 
 class District(models.Model):
-    city = models.ForeignKey(City, on_delete=models.CASCADE, related_name="districts")
+    city = models.ForeignKey(City, on_delete=models.CASCADE)
     name = models.CharField(max_length=256)
 
     class Meta:

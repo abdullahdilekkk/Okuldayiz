@@ -28,10 +28,14 @@ class UserRegisterSerializer(serializers.ModelSerializer,):
         return user
 
 class CityRelatedField(serializers.PrimaryKeyRelatedField):
+    def use_pk_only_optimization(self):
+        return False
     def to_representation(self, value):
         return CitySerializers(value).data
 
 class DistrictRelatedField(serializers.PrimaryKeyRelatedField):
+    def use_pk_only_optimization(self):
+        return False
     def to_representation(self, value):
         return DistrictSerializers(value).data
     
@@ -47,8 +51,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "phone_number",
-            "city", "city_id",
-            "district", "district_id",
+            "city",
+            "district",
             "role"
             ]
         read_only_fields = ["email", "role"]
