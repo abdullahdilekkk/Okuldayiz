@@ -1,4 +1,3 @@
-import attr
 from rest_framework import serializers
 from .models import AdditionalFee, Language, School, SchoolFeature
 from accounts.serializers import CitySerializers, DistrictSerializers, CityRelatedField, DistrictRelatedField
@@ -106,4 +105,20 @@ class SchoolDetailSerializers(serializers.Serializer):
     #normalde schoolplan_set olması gerekitdi ama related_name yapdığımız için modelde 
     plans = SchoolPlanSerializers(many = True)
     images = SchoolImageSerializers(many = True)
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+
+        request = self.context.get("request")   
+
+        if request is None or not request.user.is_authenticated:
+            data.pop("plans", None)
+
+        return data
+    
+    
+# # View tarafında (Django bunu senin için otomatik yapar):
+# serializer = SchoolDetailSerializers(
+#     instance=okul_objesi, 
+#     context={'request': request}  # <-- İŞTE BU SATIR!
 

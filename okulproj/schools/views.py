@@ -7,13 +7,13 @@ from .models import School
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 # Create your views here.
-from rest_framework.permissions import IsAuthenticated
-
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from .permissions import IsOwnerOrReadOnly
 
 class SchoolListAPIView(ListAPIView):
     queryset = School.objects.all()
     serializer_class = SchoolSerializers
-
+    permission_classes = [AllowAny]
     # 1. DjangoFilter: Net eşleşme (Şehir=İzmir)
     # 2. SearchFilter: Kelime arama (Adı "Yıldız" olanlar)
     # 3. OrderingFilter: Sıralama (Fiyata göre artan/azalan)
@@ -29,11 +29,12 @@ class SchoolListAPIView(ListAPIView):
 class SchoolDetailAPIView(RetrieveAPIView):
     queryset = School.objects.all()
     serializer_class = SchoolDetailSerializers
+    permission_classes = [AllowAny]
 
 
 class SchoolManagementAPIView(RetrieveUpdateAPIView):
     serializer_class = SchoolSerializers
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
 
     def get_queryset(self):
         return School.objects.filter(owner = self.request.user)
