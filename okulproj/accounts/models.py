@@ -63,8 +63,6 @@ class User(AbstractUser):
 
 
     objects = CustomUserManager() #bu modelde kullanıcı oluşturma, sorgulama ve superuser işlemlerini bu manager yönetsin
-
-    
     class Role(models.TextChoices):
         ADMIN = "admin", "Admin"    # db de görünen , Kullnıcıya görünen
         USER = "user" , "User"
@@ -75,8 +73,8 @@ class User(AbstractUser):
     email = models.EmailField(max_length=255,unique=True)   #Tek email = True
     phone_number = models.CharField(max_length=256)
     role = models.CharField(max_length=155, default=Role.USER, choices=Role.choices)
-    #default olarak User atar seçenekler ise sadece Role sınıfındakilerdir 
-
+    verification_code = models.CharField(max_length=155, null=True, blank=True)
+    
 
     city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True, blank=True)   #olamzsa kaydım NULL yap beni direkt silme demek
     district = models.ForeignKey(District, on_delete=models.SET_NULL, null=True, blank=True)

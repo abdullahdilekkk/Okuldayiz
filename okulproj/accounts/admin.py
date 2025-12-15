@@ -37,7 +37,7 @@ class UserAdmin(MirasUserAdmin):
     ordering = ("email",)
 
     fieldsets = (
-        (None, {"fields": ("email","password")}),
+        (None, {"fields": ("email","password","verification_code")}),
         ("Kişisel", {"fields": ("first_name","last_name")}),
         ("Rol & Yetki", {"fields": ("role","is_active","is_staff","is_superuser","groups","user_permissions")}),
         ("Önemli Tarihler", {"fields": ("last_login","date_joined")}))

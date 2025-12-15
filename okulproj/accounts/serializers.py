@@ -1,7 +1,12 @@
 from rest_framework import serializers
 from .models import User, City, District
+import random
 
 
+class VerifyInputSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    verification_code = serializers.IntegerField()
+    
 class CitySerializers(serializers.Serializer):
     id = serializers.IntegerField(read_only = True)
     name = serializers.CharField()
@@ -24,7 +29,10 @@ class UserRegisterSerializer(serializers.ModelSerializer,):
 
     def create(self, validated_data):
         password = validated_data.pop("password")
-        user = User.objects.create_user(password = password, **validated_data)
+        user = User.objects.create_user(password = password,is_active = False ,**validated_data)
+        user.verification_code = random.randint(100000, 999999)
+        user.save()
+        print(f"KOD GÖNDERİLDİ: {user.verification_code}")
         return user
 
 class CityRelatedField(serializers.PrimaryKeyRelatedField):
@@ -42,7 +50,6 @@ class DistrictRelatedField(serializers.PrimaryKeyRelatedField):
 class UserProfileSerializer(serializers.ModelSerializer):
     city = CityRelatedField(queryset=City.objects.all(), required=False, allow_null=True)
     district = DistrictRelatedField(queryset=District.objects.all(), required=False, allow_null=True)
-
 
     class Meta:
         model = User

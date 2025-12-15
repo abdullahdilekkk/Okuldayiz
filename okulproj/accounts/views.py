@@ -1,8 +1,33 @@
 from django.shortcuts import render
-from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView
+import rest_framework.exceptions
+from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView, GenericAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from .serializers import UserRegisterSerializer, UserProfileSerializer
+from rest_framework.response import Response
+from rest_framework import status
+from .serializers import UserRegisterSerializer, UserProfileSerializer, VerifyInputSerializer
 from .models import User
+import rest_framework
+
+
+class VerifyEmailView(GenericAPIView):
+    serializer_class = VerifyInputSerializer
+    def post(self, request):
+        email = request.data.get("email")
+        verification_code = request.data.get("verification_code")
+        user = User.objects.filter(email = email).first()
+
+        if user is None:
+            raise rest_framework.exceptions.ValidationError({"user":"user bulunamadı"})
+        
+        if str(user.verification_code) != str(verification_code):
+            raise rest_framework.exceptions.ValidationError({"code":"code eşleşmedi"})
+        else:
+            user.is_active = True
+            user.verification_code = None
+            user.save()
+            return Response({"detail": "Başarılı"}, status=status.HTTP_200_OK)
+
+
 
 class UserRegisterAPIView(CreateAPIView):
     queryset = User.objects.all()
