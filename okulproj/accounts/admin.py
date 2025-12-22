@@ -19,8 +19,6 @@ class UserChangeForm(MirasUserChangeForm):  #var olan kullanıcıları düzenlem
 
 
 
-
-
 @admin.register(User)
 class UserAdmin(MirasUserAdmin):
 #alt sınıftsn miras aldık adını aynı kullanmak için as dedik

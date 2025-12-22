@@ -15,7 +15,15 @@ class Lead(models.Model):
 
     time = models.DateTimeField(auto_now_add=True)
 
-    called = models.BooleanField(default=False)
+    class Status(models.TextChoices):
+        NEW = 'yeni', 'Yeni Başvuru'              
+        UNREACHABLE = 'ulasilamadi', 'Ulaşılamadı' 
+        CONTACTED = 'gorusuldu', 'Görüşüldü'       
+        MEETING = 'randevu', 'Randevu Oluşturuldu' 
+        SIGNED = 'kayit', 'Kayıt Yapıldı'        
+        NEGATIVE = 'olumsuz', 'Olumsuz'
+
+    status = models.CharField(max_length=155, choices = Status.choices, default=Status.NEW)
 
 
     def __str__(self):

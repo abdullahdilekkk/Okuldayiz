@@ -23,7 +23,7 @@ class LeadListAPIView(ListAPIView):
 
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
 
-    filterset_fields = ['called', 'school']
+    filterset_fields = ['status', 'school']
     search_fields = ['name', 'surname']      # Nerede kelime aranacak?
     ordering_fields = ['time', 'name']
 
