@@ -38,4 +38,23 @@ class LeadDetailAPIView(RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         return Lead.objects.filter(school__owner = self.request.user)
     
-    
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from django.db.models import Count, Q
+class LeadDashboardAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        my_leads = Lead.objects.filter(school__owner = request.user)
+
+        stats = my_leads.aggregate(
+            total = Count("id"),
+            new_leads_count = Count("id", filter = Q(status = Lead.Status.NEW)),
+            contacted_leads_count = Count("id", filter = Q(status= Lead.Status.CONTACTED)),
+            signed_leads_count = Count("id", filter = Q(status = Lead.Status.SIGNED)),
+            negative_leads_count = Count("id", filter = Q(status = Lead.Status.NEGATIVE)),
+            meeting_leads_count = Count("id", filter = Q(status = Lead.Status.MEETING))
+        )
+
+        return Response(stats)
