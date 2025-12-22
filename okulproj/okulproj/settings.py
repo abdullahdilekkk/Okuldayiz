@@ -149,3 +149,26 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication'
     ],
 }
+
+# okulproj/settings.py dosyasının en altına yapıştır:
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'WARNING',
+    },
+    'loggers': {
+        'django.db.backends': {  # Veritabanı katmanı
+            'handlers': ['console'],
+            'level': 'DEBUG',    # En detaylı log seviyesi
+            'propagate': False,
+        },
+    },
+}

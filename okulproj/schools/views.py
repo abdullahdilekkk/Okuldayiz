@@ -11,7 +11,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from .permissions import IsOwnerOrReadOnly
 
 class SchoolListAPIView(ListAPIView):
-    queryset = School.objects.all()
+
     serializer_class = SchoolSerializers
     permission_classes = [AllowAny]
     # 1. DjangoFilter: Net eşleşme (Şehir=İzmir)
@@ -24,6 +24,15 @@ class SchoolListAPIView(ListAPIView):
     search_fields = ["name", "description", "address"]
     # Neye göre sıralama yapılabilecek?
     ordering_fields = ["id", "name"]
+
+    def get_queryset(self):
+        return School.objects.select_related(
+            'city',      # ForeignKey (Her okulun 1 şehri var)
+            'district',  # ForeignKey (Her okulun 1 ilçesi var)
+            'owner'      # ForeignKey (Her okulun 1 sahibi var)
+        ).prefetch_related(
+            'features'   # ManyToMany (Her okulun N tane özelliği olabilir)
+        ).all()
 
 
 class SchoolDetailAPIView(RetrieveAPIView):
