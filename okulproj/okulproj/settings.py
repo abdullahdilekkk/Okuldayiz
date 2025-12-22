@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     "schools",
     "leads",
     "drf_spectacular",
+    'rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [

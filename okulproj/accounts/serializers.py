@@ -23,10 +23,39 @@ class UserRegisterSerializer(serializers.ModelSerializer,):
     password = serializers.CharField(write_only=True, required=True, style={'input_type': 'password'})
     email = serializers.EmailField(required=True)
     
+    city = serializers.CharField()
+    district = serializers.CharField()
+
     class Meta:
         model = User
         fields = ("id", "email", "password", "phone_number", "first_name", "last_name", "role", "city", "district")
 
+    def validate(self, attrs):
+        city_name = attrs.get('city')
+        district_name = attrs.get('district')
+
+        if city_name:
+            try:
+                city_obj = City.objects.get(name=city_name)
+                attrs['city'] = city_obj 
+            except City.DoesNotExist:
+                raise serializers.ValidationError({"city": "Böyle bir şehir bulunamadı."})
+
+        if district_name:
+            if 'city' not in attrs or isinstance(attrs['city'], str):
+                 pass
+            else:
+                city_obj = attrs['city'] # Yukarıda bulduğumuz şehir objesi
+                try:
+                    district_obj = District.objects.get(name=district_name, city=city_obj)
+                    attrs['district'] = district_obj
+                except District.DoesNotExist:
+                    raise serializers.ValidationError({
+                        "district": f"{district_name}, {city_obj.name} ilinde bulunamadı!"
+                    })
+
+        return attrs
+    
     def create(self, validated_data):
         password = validated_data.pop("password")
         with transaction.atomic():
@@ -65,3 +94,22 @@ class UserProfileSerializer(serializers.ModelSerializer):
             ]
         read_only_fields = ["email", "role"]
 
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
+class MyTokenObtainSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        token['username'] = user.username
+        token['email'] = user.email
+        # First name ve Last name birleştirip tam ad yapalım
+        token['full_name'] = f"{user.first_name} {user.last_name}"
+        token['role'] = user.role
+        return token
+
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        data["name"] = f"{self.user.first_name} {self.user.last_name}"
+        data['user_id'] = self.user.id
+        data['role'] = self.user.role
+        return data

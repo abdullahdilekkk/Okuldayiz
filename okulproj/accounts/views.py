@@ -7,7 +7,13 @@ from rest_framework import status
 from .serializers import UserRegisterSerializer, UserProfileSerializer, VerifyInputSerializer
 from .models import User
 import rest_framework
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .serializers import MyTokenObtainSerializer
 
+
+class MyLoginView(TokenObtainPairView):
+    serializer_class = MyTokenObtainSerializer
+    # Memura talimat veriyoruz: "Standart serializer'ı değil, benim yazdığımı kullan."
 
 class VerifyEmailView(GenericAPIView):
     serializer_class = VerifyInputSerializer

@@ -1,15 +1,14 @@
 from django.urls import path
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework_simplejwt.views import TokenRefreshView
 from .views import UserRegisterAPIView, UserProfileAPIView, VerifyEmailView
-
+from .views import MyLoginView
 app_name = "accounts"
 
 urlpatterns = [
     path("register/", UserRegisterAPIView.as_view(), name="register"),
     # 2. Giriş Yap & Token Al(Hazır gelir)
-    path("login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("login/", MyLoginView.as_view(), name="token_obtain_pair"),
     # 3. Token Yenile (Hazır Gelir)
-    path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("me/", UserProfileAPIView.as_view(), name="user_profile"),
     path("verify-email/", VerifyEmailView.as_view(), name = "verify-email"),
 ]
