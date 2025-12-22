@@ -18,8 +18,6 @@ class AdditionalFeeInline(admin.TabularInline):
     extra = 1
 
 
-
-
 @admin.register(School)
 class SchoolAdmin(admin.ModelAdmin):
     list_display = ("name", "school_type", "city", "district", "owner")

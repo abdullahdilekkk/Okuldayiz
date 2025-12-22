@@ -12,7 +12,6 @@ class LeadAdmin(admin.ModelAdmin):
         'time'
     ]
     list_display_links = ['name', 'surname']
-    list_filter = ['status', 'school']
     search_fields = ['name', 'surname', 'phone_number', 'email']
     list_per_page = 20
     list_editable = ['status']
