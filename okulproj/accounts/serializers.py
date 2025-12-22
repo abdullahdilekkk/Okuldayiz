@@ -3,6 +3,8 @@ from .models import User, City, District
 import random
 from django.db import transaction   #atomic işlem yapmak için 
 import logging
+from django.core.mail import send_mail
+from django.conf import settings
 class VerifyInputSerializer(serializers.Serializer):
     email = serializers.EmailField()
     verification_code = serializers.IntegerField()
@@ -62,8 +64,23 @@ class UserRegisterSerializer(serializers.ModelSerializer,):
             user = User.objects.create_user(password = password,is_active = False ,**validated_data)
             user.verification_code = random.randint(100000, 999999)
             user.save()
+
+            send_mail(
+                subject="Okuldayız - Doğrulama Kodu",
+                message=f'Merhaba {user.first_name}, doğrulama kodun: {user.verification_code}',
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[user.email],
+                fail_silently=False,
+            )
+
+
+
             logger.info(f"Kod gönderildi: {user.verification_code}")
             return user
+
+
+
+
 
 class CityRelatedField(serializers.PrimaryKeyRelatedField):
     def use_pk_only_optimization(self):

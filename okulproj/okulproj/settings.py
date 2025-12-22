@@ -135,7 +135,11 @@ LOGIN_URL = "accounts:login"    #path("login/", views.login_view, name="login") 
 LOGIN_REDIRECT_URL = "accounts:profile"     #başarıyla giriş yapan nereye gitsin 
 LOGOUT_REDIRECT_URL = "home"        #çıkış yapan nereye gitsin 
  
+# Gerçek mail atmak yerine Terminal'e yazdırır
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+# Kimden gidiyor görünsün?
+DEFAULT_FROM_EMAIL = 'okuldayiz@destek.com'
 
 # --- DRF AYARLARI ---
 REST_FRAMEWORK = {
@@ -151,7 +155,6 @@ REST_FRAMEWORK = {
     ],
 }
 
-# okulproj/settings.py dosyasının en altına yapıştır:
 
 LOGGING = {
     'version': 1,
@@ -163,7 +166,7 @@ LOGGING = {
     },
     'root': {
         'handlers': ['console'],
-        'level': 'WARNING',
+        'level': 'INFO',
     },
     'loggers': {
         'django.db.backends': {  # Veritabanı katmanı
