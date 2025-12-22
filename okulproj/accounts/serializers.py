@@ -36,7 +36,7 @@ class UserRegisterSerializer(serializers.ModelSerializer,):
 
         if city_name:
             try:
-                city_obj = City.objects.get(name=city_name)
+                city_obj = City.objects.get(name__iexact=city_name)
                 attrs['city'] = city_obj 
             except City.DoesNotExist:
                 raise serializers.ValidationError({"city": "Böyle bir şehir bulunamadı."})
@@ -47,7 +47,7 @@ class UserRegisterSerializer(serializers.ModelSerializer,):
             else:
                 city_obj = attrs['city'] # Yukarıda bulduğumuz şehir objesi
                 try:
-                    district_obj = District.objects.get(name=district_name, city=city_obj)
+                    district_obj = District.objects.get(name__iexact=district_name, city=city_obj)
                     attrs['district'] = district_obj
                 except District.DoesNotExist:
                     raise serializers.ValidationError({
