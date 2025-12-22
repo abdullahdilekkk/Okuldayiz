@@ -1,8 +1,8 @@
 from rest_framework import serializers
 from .models import User, City, District
 import random
-
-
+from django.db import transaction   #atomic işlem yapmak için 
+import logging
 class VerifyInputSerializer(serializers.Serializer):
     email = serializers.EmailField()
     verification_code = serializers.IntegerField()
@@ -18,7 +18,7 @@ class DistrictSerializers(serializers.Serializer):
     name = serializers.CharField()
     city_id = serializers.IntegerField() #drf direkt city_id den city i alabilir 
 
-
+logger = logging.getLogger(__name__)
 class UserRegisterSerializer(serializers.ModelSerializer,):
     password = serializers.CharField(write_only=True, required=True, style={'input_type': 'password'})
     email = serializers.EmailField(required=True)
@@ -29,11 +29,12 @@ class UserRegisterSerializer(serializers.ModelSerializer,):
 
     def create(self, validated_data):
         password = validated_data.pop("password")
-        user = User.objects.create_user(password = password,is_active = False ,**validated_data)
-        user.verification_code = random.randint(100000, 999999)
-        user.save()
-        print(f"KOD GÖNDERİLDİ: {user.verification_code}")
-        return user
+        with transaction.atomic():
+            user = User.objects.create_user(password = password,is_active = False ,**validated_data)
+            user.verification_code = random.randint(100000, 999999)
+            user.save()
+            logger.info(f"Kod gönderildi: {user.verification_code}")
+            return user
 
 class CityRelatedField(serializers.PrimaryKeyRelatedField):
     def use_pk_only_optimization(self):
