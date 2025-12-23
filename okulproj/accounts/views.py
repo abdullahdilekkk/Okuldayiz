@@ -1,10 +1,10 @@
 from django.shortcuts import render
 import rest_framework.exceptions
-from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView, GenericAPIView
+from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView, GenericAPIView, RetrieveAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import UserRegisterSerializer, UserProfileSerializer, VerifyInputSerializer
+from .serializers import UserRegisterSerializer, UserProfileSerializer, VerifyInputSerializer, UserUpdateSerializer
 from .models import User
 import rest_framework
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -41,10 +41,16 @@ class UserRegisterAPIView(CreateAPIView):
     serializer_class = UserRegisterSerializer
 
 
-class UserProfileAPIView(RetrieveUpdateAPIView):
+class UserProfileAPIView(RetrieveAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = UserProfileSerializer
 
     def get_object(self):
         return self.request.user
     
+class UserUpdateProfileAPIView(RetrieveUpdateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = UserUpdateSerializer
+
+    def get_object(self):
+        return self.request.user

@@ -4,6 +4,6 @@ from .views import SchoolListAPIView, SchoolDetailAPIView, SchoolManagementAPIVi
 urlpatterns = [
     path("list/", SchoolListAPIView.as_view(), name = "school-list"),
     path("detail/<int:pk>/", SchoolDetailAPIView.as_view(), name = "school-detail"),
-    path("manage/<int:pk>/", SchoolManagementAPIView.as_view(), name = "school-manage"),
+    path("manage/", SchoolManagementAPIView.as_view(), name = "school-manage"),
 ]
 
