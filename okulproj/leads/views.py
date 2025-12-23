@@ -10,12 +10,24 @@ from django_filters.rest_framework import DjangoFilterBackend # Net eşleşme (I
 from rest_framework.filters import SearchFilter, OrderingFilter # Arama (name="Ali") ve Sıralama
 
 
+from rest_framework.exceptions import ValidationError
 
 class LeadCreateAPIView(CreateAPIView):
     queryset = Lead.objects.all()
     serializer_class = LeadSerializer
     permission_classes = [AllowAny]
-    
+
+    # perform_create: Django'nun "Tam kaydetme anı" metodudur.
+    def perform_create(self, serializer):
+        school_request_data = serializer.validated_data.get("school")
+        current_count = Lead.objects.filter(school = school_request_data).count()
+
+        if current_count >= school_request_data.lead_limit:
+            raise ValidationError({
+                "error": "Bu okulun öğrenci kotası dolmuştur. Lütfen okul yönetimiyle iletişime geçin."
+            })
+        serializer.save()
+
 
 class LeadListAPIView(ListAPIView):
     serializer_class = LeadSerializer
@@ -42,6 +54,7 @@ class LeadDetailAPIView(RetrieveUpdateDestroyAPIView):
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.db.models import Count, Q
+
 class LeadDashboardAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
