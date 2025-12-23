@@ -27,18 +27,20 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',   #DRF İÇİN GEREK
+    'rest_framework',
     'django_filters',
     "accounts",
     "schools",
     "leads",
     "drf_spectacular",
     'rest_framework_simplejwt',
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -176,3 +178,18 @@ LOGGING = {
         },
     },
 }
+CORS_ALLOW_ALL_ORIGINS = True
+# # --- CORS AYARLARI (Çoklu İzin) ---
+# CORS_ALLOW_ALL_ORIGINS = False  # Önce kapıyı herkese kapatıyoruz!
+
+# CORS_ALLOWED_ORIGINS = [
+#     # 1. Frontend Geliştiricinin Portu (Örn: React)
+#     "http://localhost:3000",
+#     "http://127.0.0.1:3000",  # Bazen localhost yerine IP ile gelirler, ikisini de ekle.
+#     # 2. Belki ikinci bir uygulama vardır (Örn: Vue veya Admin Paneli)
+#     "http://localhost:8080",
+#     # 3. Mobil Uygulama Emülatörü
+#     "http://10.0.2.2:3000", 
+#     # 4. Canlı Site (Yarın öbür gün siteyi yayına alınca adresi buraya ekleyeceksin)
+#     "https://benimharikasitem.com",
+# ]
