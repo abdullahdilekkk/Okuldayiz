@@ -12,13 +12,11 @@ class SchoolFeature(models.Model):
     def __str__(self):
         return self.title
 
-
 class Language(models.Model):
     name = models.CharField("Dil Adı", max_length=156)
 
     def __str__(self):
         return self.name
-
 
 class Service(models.Model):
     name = models.CharField("Servis Adı", max_length=156)
@@ -26,7 +24,6 @@ class Service(models.Model):
 
     def __str__(self):
         return self.name
-
 
 class School(models.Model):
 
@@ -59,7 +56,6 @@ class School(models.Model):
     def __str__(self):
         return self.name
 
-
 class SchoolPlan(models.Model):
     class GradeLevel(models.TextChoices):
         KRES = 'kres', 'Kreş'
@@ -90,7 +86,6 @@ class SchoolPlan(models.Model):
     def __str__(self):
         return f"{self.school}-{self.title}"
     
-
 class PlanOption(models.Model):
 
     plan = models.ForeignKey(SchoolPlan, on_delete=models.CASCADE)
@@ -105,7 +100,6 @@ class PlanOption(models.Model):
         durum = "Zorunlu" if self.is_compulsory else "İsteğe Bağlı"
         return f"{self.service.name} (+{self.price} TL) - {durum}"
     
-
 class AdditionalFee(models.Model):
     """
     Eğitim ve hizmet dışındaki diğer giderler.
@@ -119,7 +113,6 @@ class AdditionalFee(models.Model):
     def __str__(self):
         return f"{self.name} ({self.price} TL)"
     
-
 class SchoolImage(models.Model):
     school = models.ForeignKey(School, on_delete=models.CASCADE, related_name="images")
     image = models.ImageField("Okul Görseli", upload_to="school_images/")
