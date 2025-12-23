@@ -20,9 +20,9 @@ class LeadCreateAPIView(CreateAPIView):
     # perform_create: Django'nun "Tam kaydetme anı" metodudur.
     def perform_create(self, serializer):
         school_request_data = serializer.validated_data.get("school")
-        current_count = Lead.objects.filter(school = school_request_data).count()
+        current_signed_count = Lead.objects.filter(school=school_request_data, status = Lead.Status.SIGNED).count()
 
-        if current_count >= school_request_data.lead_limit:
+        if current_signed_count >= school_request_data.lead_limit:
             raise ValidationError({
                 "error": "Bu okulun öğrenci kotası dolmuştur. Lütfen okul yönetimiyle iletişime geçin."
             })
@@ -49,7 +49,23 @@ class LeadDetailAPIView(RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         return Lead.objects.filter(school__owner = self.request.user)
-    
+
+
+    def perform_update(self, serializer):
+        old_data = serializer.validated_data.get("status")
+        new_data = serializer.instance.status
+
+        if new_data == Lead.Status.SIGNED and old_data != Lead.Status.SIGNED:
+            school = serializer.instance.school
+            signed_count = Lead.objects.filter(school = school, status = Lead.Status.SIGNED).count()
+
+            if signed_count >= school.lead_limit:
+                 raise ValidationError({
+                    "error": f"Kayıt kotanız ({school.lead_limit}) dolmuştur. Bu adayı 'Kayıt' durumuna alamazsınız."
+                })
+            
+        serializer.save()
+
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
