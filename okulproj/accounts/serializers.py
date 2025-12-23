@@ -16,7 +16,6 @@ class CitySerializers(serializers.Serializer):
     name = serializers.CharField()
     plate_no = serializers.IntegerField()
 
-
 class DistrictSerializers(serializers.Serializer):
     id = serializers.IntegerField(read_only = True)
     name = serializers.CharField()

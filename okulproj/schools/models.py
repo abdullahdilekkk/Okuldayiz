@@ -41,6 +41,7 @@ class School(models.Model):
     description = models.TextField("Hakkında", blank=True)
     school_type = models.CharField("Okul Türü", choices=SchoolType.choices, max_length=126)
     lead_limit = models.PositiveIntegerField("Öğrenci Kotası", default=0)
+    is_active = models.BooleanField(default=True)
 
     #konum bilgileri 
     city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True)

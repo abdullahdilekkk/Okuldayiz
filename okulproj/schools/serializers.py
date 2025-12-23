@@ -122,3 +122,57 @@ class SchoolDetailSerializers(serializers.Serializer):
 #     instance=okul_objesi, 
 #     context={'request': request}  # <-- İŞTE BU SATIR!
 
+class SchoolUpdateSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = School
+        fields = ["name", "description", "school_type", "city", "district", "address", "features"]
+
+
+
+    def validate(self, attrs):
+        
+        request_city = attrs.get("city")
+        request_district = attrs.get("district")
+
+        if "city" in attrs:
+            final_city = request_city
+        else:
+            final_city = self.instance.city
+        
+        if "district" in attrs:
+            final_district = request_district
+        else:
+            final_district = self.instance.district
+
+        if final_city and final_district:
+            if final_district.city != final_city:
+                raise serializers.ValidationError({
+                    "district": f"Hata! '{final_district.name}' ilçesi, '{final_city.name}' şehrine bağlı değildir."
+                })
+            
+        return attrs
+    
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+
+        if instance.city:
+            response['city'] = {
+                "id": instance.city.id,
+                "name": instance.city.name
+            }
+    
+        if instance.district:
+            response['district'] = {
+                "id": instance.district.id,
+                "name": instance.district.name
+            }
+
+        if instance.features.exists():
+            response['features'] = [
+                {"id": f.id, "title": f.title, "icon": f.icon if hasattr(f, 'icon') else None} 
+                for f in instance.features.all()
+            ]
+        else:
+            response['features'] = []
+
+        return response

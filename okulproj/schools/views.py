@@ -1,12 +1,11 @@
 from django.shortcuts import render
 import rest_framework
 import rest_framework.filters
-from rest_framework.generics import ListAPIView, RetrieveAPIView, RetrieveUpdateAPIView
-from .serializers import SchoolSerializers, SchoolDetailSerializers
+from rest_framework.generics import ListAPIView, RetrieveAPIView, RetrieveUpdateDestroyAPIView
+from .serializers import SchoolSerializers, SchoolDetailSerializers, SchoolUpdateSerializers
 from .models import School
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
-# Create your views here.
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .permissions import IsOwnerOrReadOnly
 
@@ -26,7 +25,9 @@ class SchoolListAPIView(ListAPIView):
     ordering_fields = ["id", "name"]
 
     def get_queryset(self):
-        return School.objects.select_related(
+        return School.objects.filter(
+            is_active=True 
+        ).select_related(
             'city',      # ForeignKey (Her okulun 1 şehri var)
             'district',  # ForeignKey (Her okulun 1 ilçesi var)
             'owner'      # ForeignKey (Her okulun 1 sahibi var)
@@ -40,10 +41,24 @@ class SchoolDetailAPIView(RetrieveAPIView):
     serializer_class = SchoolDetailSerializers
     permission_classes = [AllowAny]
 
+from rest_framework.exceptions import NotFound
 
-class SchoolManagementAPIView(RetrieveUpdateAPIView):
-    serializer_class = SchoolSerializers
-    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
+class SchoolManagementAPIView(RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
-        return School.objects.filter(owner = self.request.user)
+    def get_object(self):
+        try:
+            return School.objects.get(owner=self.request.user)
+        except School.DoesNotExist:
+            raise NotFound("Size ait bir okul bulunamadı.")
+        
+    def get_serializer_class(self):
+        if self.request.method in ['PUT', 'PATCH']:
+            return SchoolUpdateSerializers
+        
+        return SchoolDetailSerializers
+    
+    def perform_destroy(self, instance):
+        if hasattr(instance, 'is_active'):
+            instance.is_active = False
+            instance.save()
