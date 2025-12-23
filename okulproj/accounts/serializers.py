@@ -5,6 +5,8 @@ from django.db import transaction   #atomic işlem yapmak için
 import logging
 from django.core.mail import send_mail
 from django.conf import settings
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
 class VerifyInputSerializer(serializers.Serializer):
     email = serializers.EmailField()
     verification_code = serializers.IntegerField()
@@ -78,10 +80,6 @@ class UserRegisterSerializer(serializers.ModelSerializer,):
             logger.info(f"Kod gönderildi: {user.verification_code}")
             return user
 
-
-
-
-
 class CityRelatedField(serializers.PrimaryKeyRelatedField):
     def use_pk_only_optimization(self):
         return False
@@ -111,8 +109,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
             ]
         read_only_fields = ["email", "role"]
 
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-
 class MyTokenObtainSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
@@ -130,3 +126,39 @@ class MyTokenObtainSerializer(TokenObtainPairSerializer):
         data['user_id'] = self.user.id
         data['role'] = self.user.role
         return data
+    
+class UserUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["first_name", "last_name", "phone_number", "city", "district"]
+
+    def validate(self, attrs):
+        city = attrs.get("city")
+        district = attrs.get("district")
+        
+        if city and district:
+            if district.city != city:
+                raise serializers.ValidationError({
+                    "district": f"Seçilen ilçe ({district.name}), seçilen şehre ({city.name}) ait değil!"
+                })
+            
+
+        return attrs
+    
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+
+        if instance.city:
+            response["city"] = {
+                "id": instance.city.id,
+                "name": instance.city.name
+            }
+
+        if instance.district:
+            response['district'] = {
+                "id": instance.district.id,
+                "name": instance.district.name
+            }
+
+        return response
