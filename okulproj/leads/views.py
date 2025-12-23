@@ -52,8 +52,8 @@ class LeadDetailAPIView(RetrieveUpdateDestroyAPIView):
 
 
     def perform_update(self, serializer):
-        old_data = serializer.validated_data.get("status")
-        new_data = serializer.instance.status
+        new_data = serializer.validated_data.get("status")
+        old_data = serializer.instance.status
 
         if new_data == Lead.Status.SIGNED and old_data != Lead.Status.SIGNED:
             school = serializer.instance.school
