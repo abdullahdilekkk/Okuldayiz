@@ -16,6 +16,41 @@ services:
       - "3306:3306" 
     volumes:
       - mysql_data:/var/lib/mysql
+    healthcheck:
+        test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+        timeout: 20s
+        retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: okuldayiz_redis
+    ports:
+    - "6379:6379"
+  web:
+    build: .  # Dockerfile'ı buradan oku
+    container_name: okuldayiz_backend
+    restart: always
+    volumes:
+      - .:/okuldayiz  # Kodları içeri aktar
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    environment:
+      - DB_HOST=db  # Localhost yerine servisin adı
+      - DB_NAME=okuldayiz_db
+      - DB_USER=okuldayiz
+      - DB_PASSWORD=okuldayizpasword
+      - DB_PORT=3306
+      - REDIS_HOST=redis
+    # Önce tabloları kur, sonra sunucuyu aç
+    command: >
+      sh -c "python okulproj/manage.py migrate &&
+             python okulproj/manage.py runserver 0.0.0.0:8000"
+
 
 volumes:
   mysql_data:

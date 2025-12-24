@@ -31,7 +31,6 @@ class School(models.Model):
         PRIVATE = "ozel", "Özel Okul / Kolej"
         PUBLIC = "devlet", "Devlet Okulu"
 
-
     #sahibi custom user dan çekilecek 
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="schools")
 
@@ -94,7 +93,7 @@ class PlanOption(models.Model):
 
 
     price = models.DecimalField("Ek Ücret", max_digits=10, decimal_places=2)
-    is_compulsory = models.BooleanField("Zorunlu mu?", default=False) # Bazı okullarda yemek zorunlu olabilir
+    is_compulsory = models.BooleanField("Zorunlu mu?", default=False) 
 
 
     def __str__(self):
