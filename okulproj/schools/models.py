@@ -1,11 +1,9 @@
-from pyexpat import model
 from django.conf import settings
 from django.db import models
 from django.forms import CharField, ChoiceField
 from slugify import slugify
 from accounts.models import City, District
 from core.models import BaseModel
-# Create your models here.
 
 class SchoolFeature(models.Model):
     title = models.CharField("Özellik Adı", max_length=50)
