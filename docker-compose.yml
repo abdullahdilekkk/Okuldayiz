@@ -1,5 +1,3 @@
-version: "3.8" 
-# Docker Compose'un hangi sürümünü kullandığımız. (Standart 3.8'dir)
 
 services:
 
