@@ -1,8 +1,9 @@
 from django.db import models
 from django.forms import CharField, DateTimeField
 from schools.models import School, SchoolPlan, PlanOption
+from core.models import BaseModel
 # Create your models here.
-class Lead(models.Model):
+class Lead(BaseModel):
     name = models.CharField("Başvuru Yapan Adı", max_length=128)
     surname = models.CharField("Başvuru Yapan Soyadı", max_length=128)
     phone_number = models.CharField(max_length=128)

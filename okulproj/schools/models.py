@@ -4,7 +4,7 @@ from django.db import models
 from django.forms import CharField, ChoiceField
 from slugify import slugify
 from accounts.models import City, District
-
+from core.models import BaseModel
 # Create your models here.
 
 class SchoolFeature(models.Model):
@@ -26,36 +26,24 @@ class Service(models.Model):
     def __str__(self):
         return self.name
 
-class School(models.Model):
+class School(BaseModel):
 
     class SchoolType(models.TextChoices):
         PRIVATE = "ozel", "Özel Okul / Kolej"
         PUBLIC = "devlet", "Devlet Okulu"
 
-    #sahibi custom user dan çekilecek 
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="schools")
-
-    #okulun temel bilgileri
     name = models.CharField("Okul Adı", max_length=256)
     slug = models.SlugField("URL Yolu", unique=True, blank=True ,)
     description = models.TextField("Hakkında", blank=True)
     school_type = models.CharField("Okul Türü", choices=SchoolType.choices, max_length=126)
     lead_limit = models.PositiveIntegerField("Öğrenci Kotası", default=0)
-    is_active = models.BooleanField(default=True)
-
-    #konum bilgileri 
     city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True)
     district = models.ForeignKey(District, on_delete=models.SET_NULL, null=True)
     address = models.TextField("Açık Adres")
     latitude = models.DecimalField("Enlem", max_digits=9, decimal_places=6, null =True, blank=True)
     longitude = models.DecimalField("Boylam", max_digits=9, decimal_places=6, null=True, blank=True)
-
     features = models.ManyToManyField(SchoolFeature, blank =True)
-
-
-    created_at = models.DateTimeField(auto_now_add=True) # İlk oluşturulma tarihi
-    updated_at = models.DateTimeField(auto_now=True)     # Son güncellenme tarihi
-
     min_price = models.DecimalField(max_digits=11, decimal_places=2,default=0)
     max_price = models.DecimalField(max_digits=11, decimal_places=2, default=0)
 
@@ -66,7 +54,7 @@ class School(models.Model):
         self.slug = slugify(self.name)
         return super().save(*args, **kwargs)
 
-class SchoolPlan(models.Model):
+class SchoolPlan(BaseModel):
     class GradeLevel(models.TextChoices):
         KRES = 'kres', 'Kreş'
         ANAOKULU = 'anaokulu', 'Anaokulu'
@@ -96,7 +84,7 @@ class SchoolPlan(models.Model):
     def __str__(self):
         return f"{self.school}-{self.title}"
     
-class PlanOption(models.Model):
+class PlanOption(BaseModel):
 
     plan = models.ForeignKey(SchoolPlan, on_delete=models.CASCADE)
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
@@ -110,7 +98,7 @@ class PlanOption(models.Model):
         durum = "Zorunlu" if self.is_compulsory else "İsteğe Bağlı"
         return f"{self.service.name} (+{self.price} TL) - {durum}"
     
-class AdditionalFee(models.Model):
+class AdditionalFee(BaseModel):
     """
     Eğitim ve hizmet dışındaki diğer giderler.
     Örn: Kırtasiye, Kıyafet, Kayıt Yenileme Bedeli
@@ -123,7 +111,7 @@ class AdditionalFee(models.Model):
     def __str__(self):
         return f"{self.name} ({self.price} TL)"
     
-class SchoolImage(models.Model):
+class SchoolImage(BaseModel):
     school = models.ForeignKey(School, on_delete=models.CASCADE, related_name="images")
     image = models.ImageField("Okul Görseli", upload_to="school_images/")
     
