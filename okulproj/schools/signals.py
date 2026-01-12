@@ -8,7 +8,15 @@ def update_school_prices(sender, instance, *args, **kwargs):
 
     school = instance.school
 
-    aggregates = school.plans.aggregate(
+    active_plans = school.plans.filter(is_deleted=False)
+
+    if not active_plans.exists():
+        school.min_price = 0
+        school.max_price = 0
+        school.save()
+        return
+
+    aggregates = active_plans.aggregate(
         min_price = Min("cash_price"),
         max_price = Max("cash_price")
     )
