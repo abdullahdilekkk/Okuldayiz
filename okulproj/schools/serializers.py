@@ -54,7 +54,6 @@ class ServiceSerializers(serializers.Serializer):
     icon = serializers.CharField()
 
 
-
 class PlanOptionSerializers(serializers.Serializer):
     id = serializers.IntegerField(read_only = True)
     plan_id = serializers.IntegerField(read_only = True)    #döngüye girmesin diye id 

@@ -24,3 +24,4 @@ rpds-py==0.29.0
 ruff==0.14.2
 sqlparse==0.5.3
 uritemplate==4.2.0
+python-slugify

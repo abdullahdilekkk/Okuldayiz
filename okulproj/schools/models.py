@@ -2,6 +2,7 @@ from pyexpat import model
 from django.conf import settings
 from django.db import models
 from django.forms import CharField, ChoiceField
+from slugify import slugify
 from accounts.models import City, District
 
 # Create your models here.
@@ -36,7 +37,7 @@ class School(models.Model):
 
     #okulun temel bilgileri
     name = models.CharField("Okul Adı", max_length=256)
-    slug = models.SlugField("URL Yolu", unique=True)
+    slug = models.SlugField("URL Yolu", unique=True, blank=True ,)
     description = models.TextField("Hakkında", blank=True)
     school_type = models.CharField("Okul Türü", choices=SchoolType.choices, max_length=126)
     lead_limit = models.PositiveIntegerField("Öğrenci Kotası", default=0)
@@ -46,6 +47,8 @@ class School(models.Model):
     city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True)
     district = models.ForeignKey(District, on_delete=models.SET_NULL, null=True)
     address = models.TextField("Açık Adres")
+    latitude = models.DecimalField("Enlem", max_digits=9, decimal_places=6, null =True, blank=True)
+    longitude = models.DecimalField("Boylam", max_digits=9, decimal_places=6, null=True, blank=True)
 
     features = models.ManyToManyField(SchoolFeature, blank =True)
 
@@ -53,8 +56,15 @@ class School(models.Model):
     created_at = models.DateTimeField(auto_now_add=True) # İlk oluşturulma tarihi
     updated_at = models.DateTimeField(auto_now=True)     # Son güncellenme tarihi
 
+    min_price = models.DecimalField(max_digits=9, decimal_places=6,default=0)
+    max_price = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+
     def __str__(self):
         return self.name
+    
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        return super().save(*args, **kwargs)
 
 class SchoolPlan(models.Model):
     class GradeLevel(models.TextChoices):
