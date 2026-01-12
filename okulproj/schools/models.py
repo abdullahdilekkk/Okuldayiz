@@ -56,8 +56,8 @@ class School(models.Model):
     created_at = models.DateTimeField(auto_now_add=True) # İlk oluşturulma tarihi
     updated_at = models.DateTimeField(auto_now=True)     # Son güncellenme tarihi
 
-    min_price = models.DecimalField(max_digits=10, decimal_places=2,default=0)
-    max_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    min_price = models.DecimalField(max_digits=11, decimal_places=2,default=0)
+    max_price = models.DecimalField(max_digits=11, decimal_places=2, default=0)
 
     def __str__(self):
         return self.name
@@ -87,8 +87,8 @@ class SchoolPlan(models.Model):
     description = models.TextField("Ekstra Açıklama", blank=True)
 
     #standart paket fiyatı peşin/taksitli
-    cash_price = models.DecimalField("Peşin Fiyat", max_digits=10, decimal_places=2, default=0)
-    installment_price = models.DecimalField("Taksitli Fiyat (Liste Fiyatı)", max_digits=10, decimal_places=2, default=0)
+    cash_price = models.DecimalField("Peşin Fiyat", max_digits=11, decimal_places=2, default=0)
+    installment_price = models.DecimalField("Taksitli Fiyat (Liste Fiyatı)", max_digits=11, decimal_places=2, default=0)
 
     included_services = models.ManyToManyField(Service, blank=True, verbose_name="Fiyata Dahil Standart Hizmetler")
 
