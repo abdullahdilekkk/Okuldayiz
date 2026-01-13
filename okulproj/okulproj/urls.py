@@ -17,4 +17,5 @@ urlpatterns = [
     path("api/schools/", include("schools.urls")),
     path("api/leads/", include("leads.urls")),
     path("api/comments/", include("comments.urls")), # Yorum Sistemi
+    path("api/favorites/", include("favorites.urls")),
 ]
