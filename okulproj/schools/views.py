@@ -4,11 +4,15 @@ import rest_framework.filters
 from rest_framework.generics import ListAPIView, RetrieveAPIView, RetrieveUpdateDestroyAPIView
 from .serializers import SchoolSerializers, SchoolDetailSerializers, SchoolUpdateSerializers
 from .models import School
+from .filters import SchoolFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .permissions import IsOwnerOrReadOnly
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 
+@method_decorator(cache_page(60 * 15), name='dispatch') # 15 dakika cache
 class SchoolListAPIView(ListAPIView):
 
     serializer_class = SchoolSerializers
@@ -18,7 +22,8 @@ class SchoolListAPIView(ListAPIView):
     # 3. OrderingFilter: Sıralama (Fiyata göre artan/azalan)
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     # Hangi alanlara göre net filtreleme yapılacak?
-    filterset_fields = ["city", "district", "school_type"]
+    # Custom FilterSet sınıfını kullanıyoruz
+    filterset_class = SchoolFilter
     # Hangi alanlarda kelime aranacak?
     search_fields = ["name", "description", "address"]
     # Neye göre sıralama yapılabilecek?
