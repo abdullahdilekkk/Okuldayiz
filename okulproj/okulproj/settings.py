@@ -170,6 +170,16 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES' : [
         'rest_framework_simplejwt.authentication.JWTAuthentication'
     ],
+    
+    # 3. Hız Limiti (Throttling) - Güvenlik Duvarı 🛡️
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle', # Anonim (IP Bazlı)
+        'rest_framework.throttling.UserRateThrottle'  # Üye (Token Bazlı)
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '20/minute',  # Yabancılar: Dakikada 20 istek
+        'user': '100/minute'  # Bizimkiler: Dakikada 100 istek
+    }
 }
 
 
