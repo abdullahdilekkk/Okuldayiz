@@ -36,9 +36,9 @@ Projeyi en hızlı ve hatasız şekilde çalıştırmak için Docker Compose kul
     Oluşturulan `okulproj/.env` dosyasının içeriğindeki veritabanı şifrelerini, `SECRET_KEY` değerini ve diğer ayarları kendi tercihlerinize göre güncelleyebilirsiniz. (Varsayılan değerlerle de çalışacaktır).
 
 3.  **Docker Compose ile Servisleri Başlatın:**
-    Ana dizindeki `docker-compose.yml` dosyasını kullanarak konteynerleri oluşturun ve başlatın:
+    Ana dizindeki `docker-compose.yml` dosyasını kullanarak konteynerleri oluşturun ve başlatın. Docker'ın çevresel değişkenleri doğru görmesi için `--env-file` parametresini kullanmayı unutmayın:
     ```bash
-    docker-compose up -d --build
+    docker-compose --env-file okulproj/.env up -d --build
     ```
     Bu komut MySQL, Redis ve Django web sunucusunu arka planda ayağa kaldıracaktır. İlk kurulumda veritabanı tabloları otomatik oluşturulacaktır (migration komutları container içerisinde çalışır).
 
