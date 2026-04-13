@@ -6,10 +6,10 @@ services:
     restart: always
     container_name: okuldayiz_mysql_database
     environment:
-      MYSQL_ROOT_PASSWORD: passwordAPOW
-      MYSQL_DATABASE: okuldayiz_db
-      MYSQL_USER: okuldayiz
-      MYSQL_PASSWORD: okuldayizpasword
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: ${DB_NAME:-okuldayiz_db}
+      MYSQL_USER: ${DB_USER:-okuldayiz}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-yourdbpassword}
     ports: 
       - "3306:3306" 
     volumes:
@@ -39,10 +39,10 @@ services:
         condition: service_started
     environment:
       - DB_HOST=db  # Localhost yerine servisin adı
-      - DB_NAME=okuldayiz_db
-      - DB_USER=okuldayiz
-      - DB_PASSWORD=okuldayizpasword
-      - DB_PORT=3306
+      - DB_NAME=${DB_NAME:-okuldayiz_db}
+      - DB_USER=${DB_USER:-okuldayiz}
+      - DB_PASSWORD=${DB_PASSWORD:-yourdbpassword}
+      - DB_PORT=${DB_PORT:-3306}
       - REDIS_HOST=redis
     # Önce tabloları kur, sonra sunucuyu aç
     command: >
